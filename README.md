@@ -17,29 +17,27 @@ type list struct {
 }
 
 func main() {
-
-	tbl := table.New("ID", "NAME")
-
-	headerFmt := color.New(color.FgBlue, color.Underline).SprintfFunc()
-	columnFmt := color.New(color.FgGreen).SprintfFunc()
-	tbl.WithHeaderFormatter(headerFmt).WithFirstColumnFormatter(columnFmt)
+    tbl := table.New("ID", "NAME")
+    headerFmt := color.New(color.FgBlue, color.Underline).SprintfFunc()
+    columnFmt := color.New(color.FgGreen).SprintfFunc()
+    tbl.WithHeaderFormatter(headerFmt).WithFirstColumnFormatter(columnFmt)
 
     var list = []list{
         { "123123", "Jonh"},
         { "123121", "Jeff"},
     }
 
-	for _, i := range list {
-		tbl.AddRow(i.ID, i.Name)
-	}
+    for _, i := range list {
+	tbl.AddRow(i.ID, i.Name)
+    }
 
-	format := strings.Repeat("%s", len(tbl.GetHeader())) + "\n"
-	tbl.CalculateWidths([]string{})
+    format := strings.Repeat("%s", len(tbl.GetHeader())) + "\n"
+    tbl.CalculateWidths([]string{})
 
-	tbl.PrintHeader(format)
+    tbl.PrintHeader(format)
 	for _, r := range tbl.GetRows() {
-		tbl.PrintRow(format, r)
-	}
+	    tbl.PrintRow(format, r)
+    }
 }
 
 ```
