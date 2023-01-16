@@ -1,5 +1,7 @@
 # tablecli
 
+Packages provide a convenient way to generate tabular output of any data, useful primarily for CLI tools.
+
 #### Example of use:
 ```go 
 package main
