@@ -45,7 +45,7 @@ func main() {
 ```
 
 #### Output: 
-```shell
+```sh
 ID      NAME  
 123123  Jonh  
 123121  Jeff 
