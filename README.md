@@ -1,4 +1,5 @@
-# tablecli
+# tablecli [![GoDoc](https://godoc.org/github.com/MaxwelMazur/tablecli?status.svg)](https://godoc.org/github.com/MaxwelMazur/tablecli)<br>
+
 
 Packages provide a convenient way to generate tabular output of any data, useful primarily for CLI tools.
 
@@ -51,4 +52,3 @@ ID      NAME
 123121  Jeff 
 ```
 
-[![GoDoc](https://godoc.org/github.com/MaxwelMazur/tablecli?status.svg)](https://godoc.org/github.com/MaxwelMazur/tablecli)<br>
