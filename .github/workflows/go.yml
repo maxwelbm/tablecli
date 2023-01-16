@@ -29,23 +29,3 @@ jobs:
 
       - name: Test
         run: go test -v -race -cover ./...
-
-      - name: Checkout code
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-
-      - name: Bump version and push tag
-        id: tag_ver
-        uses: anothrNick/github-tag-action@1.37.0
-        env:
-          RELEASE_BRANCHES: main
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PRERELEASE_SUFFIX: dev
-          WITH_V: true
-
-      - name: Refresh git
-        run: git fetch --tags
-
-      - name: set bin_version environment variable
-        run: echo "BIN_VERSION=$(git describe --tags)" >> $GITHUB_ENV
