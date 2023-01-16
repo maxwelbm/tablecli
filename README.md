@@ -51,4 +51,4 @@ ID      NAME
 123121  Jeff 
 ```
 
-Made with ﵆ 
+[![GoDoc](https://godoc.org/github.com/MaxwelMazur/tablecli?status.svg)](https://godoc.org/github.com/MaxwelMazur/tablecli) [![Build Status](https://travis-ci.org/MaxwelMazur/tablecli.svg)](https://travis-ci.org/MaxwelMazur/tablecli)<br>
