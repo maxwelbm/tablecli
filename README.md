@@ -5,8 +5,8 @@
 package main
 
 import (
-	table "github.com/MaxwelMazur/tablecli"
-	"github.com/fatih/color"
+    table "github.com/MaxwelMazur/tablecli"
+    "github.com/fatih/color"
     "strings"
 )
 
