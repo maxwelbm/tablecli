@@ -2,6 +2,8 @@
 
 Packages provide a convenient way to generate tabular output of any data, useful primarily for CLI tools.
 
+<img src="https://raw.githubusercontent.com/MaxwelMazur/tablecli/main/0aac4e6a54c170b06e2bd3848d2b735e.gif?auto=compress&cs=tinysrgb&h=750&w=1260" alt="Girl in a jacket" width="100%" height="250px">
+
 #### Example of use:
 ```go 
 package main
