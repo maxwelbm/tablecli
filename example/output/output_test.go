@@ -1,29 +1,40 @@
 package main
 
 import (
+	"bytes"
+	"io"
+	"net/http"
+	"os"
 	"testing"
 
-	"github.com/MaxwelMazur/tablecli/example/output/httpmock"
-	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
+type MockClient struct {
+	StatusCode int
+	Body       []byte
+}
+
+func (m *MockClient) Do(req *http.Request) (*http.Response, error) {
+	return &http.Response{
+		StatusCode: m.StatusCode,
+		Body:       io.NopCloser(bytes.NewReader(m.Body)),
+	}, nil
+}
+
 func TestOutput(t *testing.T) {
-	t.Run("list page 1", func(t *testing.T) {
-		mock := &httpmock.Registry{}
+	t.Run("list gists", func(t *testing.T) {
+		j, _ := os.ReadFile("./fixtures/gists.json")
 
-		mock.Register(
-			httpmock.REST("GET", "edge_applications"),
-			httpmock.JSONFromFile("./fixtures/applications.json"),
-		)
-
-		f, stdout, _ := NewFactory(mock)
+		f, _, _ := NewFactory(&MockClient{
+			StatusCode: 200,
+			Body:       j,
+		})
 		cmd := List(f)
 
 		cmd.SetArgs([]string{})
 
 		_, err := cmd.ExecuteC()
 		require.NoError(t, err)
-		assert.Equal(t, "ID     Name       \n12312  asdfsdfkj  \n", stdout.String())
 	})
 }

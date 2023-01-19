@@ -2,23 +2,43 @@ package main
 
 import (
 	"bytes"
+	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"os"
 	"time"
 
 	table "github.com/MaxwelMazur/tablecli"
-	"github.com/MaxwelMazur/tablecli/example/output/httpmock"
 	"github.com/spf13/cobra"
 )
 
-type StrList struct {
-	ID   string
-	Name string
+// HttpClient interface made to fake a request
+type HttpClient interface {
+	Do(req *http.Request) (*http.Response, error)
+}
+
+type Gists []struct {
+	URL         string      `json:"url,omitempty"`
+	ForksURL    string      `json:"forks_url,omitempty"`
+	CommitsURL  string      `json:"commits_url,omitempty"`
+	ID          string      `json:"id,omitempty"`
+	NodeID      string      `json:"node_id,omitempty"`
+	GitPullURL  string      `json:"git_pull_url,omitempty"`
+	GitPushURL  string      `json:"git_push_url,omitempty"`
+	HTMLURL     string      `json:"html_url,omitempty"`
+	Public      bool        `json:"public,omitempty"`
+	CreatedAt   time.Time   `json:"created_at,omitempty"`
+	UpdatedAt   time.Time   `json:"updated_at,omitempty"`
+	Description string      `json:"description,omitempty"`
+	Comments    int         `json:"comments,omitempty"`
+	User        interface{} `json:"user,omitempty"`
+	CommentsURL string      `json:"comments_url,omitempty"`
+	Truncated   bool        `json:"truncated,omitempty"`
 }
 
 type Factory struct {
-	HttpClient *http.Client
+	HttpClient HttpClient
 	IOStreams  *IOStreams
 }
 
@@ -36,23 +56,16 @@ func System() *IOStreams {
 	}
 }
 
-func NewFactory(mock *httpmock.Registry) (factory *Factory, out *bytes.Buffer, err *bytes.Buffer) {
+func NewFactory(client HttpClient) (factory *Factory, out *bytes.Buffer, err *bytes.Buffer) {
 	stdout, stderr := &bytes.Buffer{}, &bytes.Buffer{}
 	f := &Factory{
-		HttpClient: &http.Client{Transport: mock},
-		IOStreams: &IOStreams{
-			Out: stdout,
-			Err: stderr,
-		},
+		HttpClient: client,
+		IOStreams:  System(),
 	}
 	return f, stdout, stderr
 }
 
 func main() {
-	Execute()
-}
-
-func Execute() {
 	streams := System()
 	httpClient := &http.Client{
 		Timeout: 10 * time.Second, // TODO: Configure this somewhere
@@ -63,14 +76,9 @@ func Execute() {
 		IOStreams:  streams,
 	}
 
-	cmd := NewRootCmd(factory)
-	cobra.CheckErr(cmd.Execute())
-}
-
-func NewRootCmd(f *Factory) *cobra.Command {
-	rootCmd := &cobra.Command{}
-	rootCmd.AddCommand(List(f))
-	return rootCmd
+	rootCmd := new(cobra.Command)
+	rootCmd.AddCommand(List(factory))
+	cobra.CheckErr(rootCmd.Execute())
 }
 
 func List(f *Factory) *cobra.Command {
@@ -78,20 +86,56 @@ func List(f *Factory) *cobra.Command {
 		Use: "list",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			table.DefaultWriter = f.IOStreams.Out
-			tbl := table.New("ID", "Name")
+			tbl := table.New("ID", "URL")
 
-			list := []StrList{
-				{"12312", "asdfsdfkj"},
-			}
-
-			for _, i := range list {
-				tbl.AddRow(i.ID, i.Name)
+			for _, i := range getGists(f) {
+				tbl.AddRow(i.ID, i.URL)
 			}
 
 			tbl.Print()
 			return nil
 		},
 	}
-
 	return cmd
+}
+
+//	curl \
+//	  -H "Accept: application/vnd.github+json" \
+//	  -H "Authorization: Bearer <YOUR-TOKEN>"\
+//	  -H "X-GitHub-Api-Version: 2022-11-28" \
+//	  https://api.github.com/users/<YOUR-USER>/gists
+func getGists(f *Factory) Gists {
+	requestURL := "https://api.github.com/users/<YOUR-USER>/gists"
+	req, err := http.NewRequest(http.MethodGet, requestURL, nil)
+	if err != nil {
+		fmt.Printf("client: could not create request: %s\n", err)
+		os.Exit(1)
+	}
+
+	req.Header.Set("Accept", "application/vnd.github+json")
+	req.Header.Set("Authorization", "Bearer <YOUR-TOKEN>") // replace <YOUR-TOKEN> for you token
+	req.Header.Set("X-GitHub-Api-Version", "2022-11-28")
+
+	res, err := f.HttpClient.Do(req)
+	if err != nil {
+		fmt.Printf("client: error making http request: %s\n", err)
+		os.Exit(1)
+	}
+
+	fmt.Printf("client: got response!\n")
+	fmt.Printf("client: status code: %d\n", res.StatusCode)
+
+	resBody, err := io.ReadAll(res.Body)
+	if err != nil {
+		fmt.Printf("client: could not read response body: %s\n", err)
+		os.Exit(1)
+	}
+
+	var gists Gists
+
+	if err := json.Unmarshal(resBody, &gists); err != nil {
+		fmt.Printf("client: error Unmarshal: %s\n", err)
+		os.Exit(1)
+	}
+	return gists
 }
