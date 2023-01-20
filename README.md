@@ -1,5 +1,8 @@
 # tablecli
 
+[![License: MIT](https://img.shields.io/badge/license-MIT-green?style=for-the-badge&logo=MIT)](https://opensource.org/licenses/MIT)
+[![GoDoc](https://img.shields.io/badge/reference-GO-blue.svg?style=for-the-badge&logo=go&logoColor=white)](https://godoc.org/github.com/MaxwelMazur/tablecli)
+
 Packages provide a convenient way to generate tabular output of any data, useful primarily for CLI tools.
 
 <img src="https://raw.githubusercontent.com/MaxwelMazur/tablecli/main/example.gif?auto=compress&cs=tinysrgb&h=750&w=1260" alt="Girl in a jacket" width="100%" height="250px">
@@ -52,6 +55,4 @@ ID      NAME
 123123  Jonh  
 123121  Jeff 
 ```
-
-[![GoDoc](https://godoc.org/github.com/MaxwelMazur/tablecli?status.svg)](https://godoc.org/github.com/MaxwelMazur/tablecli)<br>
 
