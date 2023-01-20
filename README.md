@@ -1,6 +1,6 @@
 # tablecli
 
-[![License: MIT](https://img.shields.io/badge/license-MIT-green?style=for-the-badge&logo=MIT)](https://opensource.org/licenses/MIT)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green?style=for-the-badge&logo=OpenSourceInitiative)](https://opensource.org/licenses/MIT)
 [![GoDoc](https://img.shields.io/badge/reference-GO-blue.svg?style=for-the-badge&logo=go&logoColor=white)](https://godoc.org/github.com/MaxwelMazur/tablecli)
 
 Packages provide a convenient way to generate tabular output of any data, useful primarily for CLI tools.
