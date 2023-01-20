@@ -40,6 +40,7 @@ type Gists []struct {
 type Factory struct {
 	HttpClient HttpClient
 	IOStreams  *IOStreams
+	Buffer     bytes.Buffer
 }
 
 type IOStreams struct {
@@ -56,26 +57,20 @@ func System() *IOStreams {
 	}
 }
 
-func NewFactory(client HttpClient) (factory *Factory, out *bytes.Buffer, err *bytes.Buffer) {
-	stdout, stderr := &bytes.Buffer{}, &bytes.Buffer{}
-	f := &Factory{
+func NewFactory(client HttpClient) *Factory {
+	return &Factory{
 		HttpClient: client,
 		IOStreams:  System(),
+		Buffer:     bytes.Buffer{},
 	}
-	return f, stdout, stderr
 }
 
 func main() {
-	streams := System()
 	httpClient := &http.Client{
 		Timeout: 10 * time.Second, // TODO: Configure this somewhere
 	}
 
-	factory := &Factory{
-		HttpClient: httpClient,
-		IOStreams:  streams,
-	}
-
+	factory := NewFactory(httpClient)
 	rootCmd := new(cobra.Command)
 	rootCmd.AddCommand(List(factory))
 	cobra.CheckErr(rootCmd.Execute())
@@ -85,14 +80,14 @@ func List(f *Factory) *cobra.Command {
 	cmd := &cobra.Command{
 		Use: "list",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			table.DefaultWriter = f.IOStreams.Out
-			tbl := table.New("ID", "URL")
 
+			tbl := table.New("ID", "URL").WithWriter(&f.Buffer)
 			for _, i := range getGists(f) {
 				tbl.AddRow(i.ID, i.URL)
 			}
 
 			tbl.Print()
+
 			return nil
 		},
 	}
