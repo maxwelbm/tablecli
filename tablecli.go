@@ -145,7 +145,6 @@ func (t *table) SetRows(Rows [][]string) Table {
 
 func (t *table) Print() {
 	format := strings.Repeat("%s", len(t.Header)) + "\n"
-	fmt.Println("format ", format)
 	t.CalculateWidths([]string{})
 
 	t.PrintHeader(format)
