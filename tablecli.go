@@ -33,6 +33,7 @@ type Table interface {
 	CalculateWidths([]string)
 	GetHeader() []string
 	GetRows() [][]string
+	GetWriter() io.Writer 
 	PrintHeader(format string)
 	PrintRow(format string, row []string)
 }
@@ -69,6 +70,10 @@ type table struct {
 
 func (t *table) GetRows() [][]string {
 	return t.Rows
+}
+
+func (t *table) GetWriter() io.Writer {
+	return t.Writer
 }
 
 func (t *table) GetHeader() []string {
