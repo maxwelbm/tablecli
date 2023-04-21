@@ -1,4 +1,4 @@
-module github.com/MaxwelMazur/tablecli
+module github.com/maxwelbm/tablecli
 
 go 1.17
 
