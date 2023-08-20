@@ -1,6 +1,6 @@
 package tablecli
 
-import(
+import (
 	"bytes"
 	"strings"
 	"testing"

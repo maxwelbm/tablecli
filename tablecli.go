@@ -1,7 +1,7 @@
 package tablecli
 
 import (
-  "bytes"
+	"bytes"
 	"fmt"
 	"io"
 	"os"
@@ -35,7 +35,7 @@ type Table interface {
 	CalculateWidths([]string)
 	GetHeader() []string
 	GetRows() [][]string
-	GetWriter() io.Writer 
+	GetWriter() io.Writer
 	PrintHeader(format string)
 	PrintRow(format string, row []string)
 }
@@ -161,17 +161,17 @@ func (t *table) Print() {
 }
 
 func (t *table) GetByteFormat() []byte {
-  var b bytes.Buffer
+	var b bytes.Buffer
 	format := strings.Repeat("%s", len(t.Header)) + "\n"
 	t.CalculateWidths([]string{})
 	for _, row := range t.Rows {
-	  vals := t.applyWidths(row, t.Widths)
-  	if t.FirstColumnFormatter != nil {
-		  vals[0] = t.FirstColumnFormatter("%s", vals[0])
-	  }
-    b.Write([]byte(fmt.Sprintf(format, vals...)))
+		vals := t.applyWidths(row, t.Widths)
+		if t.FirstColumnFormatter != nil {
+			vals[0] = t.FirstColumnFormatter("%s", vals[0])
+		}
+		b.Write([]byte(fmt.Sprintf(format, vals...)))
 	}
-  return b.Bytes()
+	return b.Bytes()
 }
 
 func (t *table) PrintHeader(format string) {
