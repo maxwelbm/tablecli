@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-green&logo=OpenSourceInitiative)](https://opensource.org/licenses/MIT)
 [![GoDoc](https://img.shields.io/badge/reference-GO-blue.svg?style=&logo=go&logoColor=white)](https://godoc.org/github.com/maxwelbm/tablecli)
-[![go report card](https://goreportcard.com/badge/github.com/maxwelbm/tablecli)](https://goreportcard.com/report/github.com/maxwelbm/tablecli) 
+[![Go Report Card](https://goreportcard.com/badge/github.com/maxwelbm/tablecli)](https://goreportcard.com/report/github.com/maxwelbm/tablecli)
 [![CI](https://img.shields.io/badge/CI-Passing-gree.svg?style=&logo=github)](https://github.com/maxwelbm/tablecli/actions/workflows/go.yml)
 
 Packages provide a convenient way to generate tabular output of any data, useful primarily for CLI tools.
