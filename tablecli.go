@@ -29,6 +29,7 @@ type Table interface {
 	WithWriter(w io.Writer) Table
 	WithWidthFunc(f WidthFunc) Table
 	AddRow(vals ...interface{}) Table
+	AddRows(rows []string) Table
 	SetRows(Rows [][]string) Table
 	Print()
 	GetByteFormat() []byte
@@ -52,6 +53,24 @@ func New(columnHeaders ...interface{}) Table {
 	t.WithWidthFunc(DefaultWidthFunc)
 
 	for i, col := range columnHeaders {
+		t.Header[i] = fmt.Sprint(col)
+	}
+
+	return &t
+}
+
+func NewTable(columns []string) Table {
+	t := table{
+		Header: make([]string, len(columns)),
+	}
+
+	t.WithPadding(DefaultPadding)
+	t.WithWriter(DefaultWriter)
+	t.WithHeaderFormatter(DefaultHeaderFormatter)
+	t.WithFirstColumnFormatter(DefaultFirstColumnFormatter)
+	t.WithWidthFunc(DefaultWidthFunc)
+
+	for i, col := range columns {
 		t.Header[i] = fmt.Sprint(col)
 	}
 
@@ -123,6 +142,26 @@ func (t *table) AddRow(vals ...interface{}) Table {
 	for i := 0; i <= maxNumNewlines; i++ {
 		row := make([]string, len(t.Header))
 		for j, val := range vals {
+			if j >= len(t.Header) {
+				break
+			}
+			v := strings.Split(fmt.Sprint(val), "\n")
+			row[j] = safeOffset(v, i)
+		}
+		t.Rows = append(t.Rows, row)
+	}
+
+	return t
+}
+
+func (t *table) AddRows(rows []string) Table {
+	maxNumNewlines := 0
+	for _, val := range rows {
+		maxNumNewlines = max(strings.Count(fmt.Sprint(val), "\n"), maxNumNewlines)
+	}
+	for i := 0; i <= maxNumNewlines; i++ {
+		row := make([]string, len(t.Header))
+		for j, val := range rows {
 			if j >= len(t.Header) {
 				break
 			}
